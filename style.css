@@ -1,0 +1,395 @@
+/* General Resets */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  body {
+    font-family: 'Poppins', sans-serif;
+    color: #333;
+    background-color: #f4f4f9;
+  }
+  
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+  }
+  
+  /* Header Styles */
+  .header {
+    position:fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    padding: 15px 0;
+    background-color: rgba(255, 255, 255, 0.95);
+    box-shadow: 0 1px 10px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+  }
+  
+  .brand {
+    font-size: 2rem;
+    font-weight: 800;
+    color: #333;
+    margin-top: -10px;
+    margin-bottom: 7px;
+  }
+  
+  .nav-links {
+    list-style: none;
+    display: flex;
+    justify-content: space-between;
+  }
+  
+  .nav-links li {
+    margin-left: 20px;
+    margin-top: auto;
+    margin-bottom: -2px;
+  }
+  
+  .nav-links a {
+    color: #333;
+    text-decoration: none;
+    font-size: 1.1rem;
+    padding: 10px 15px;
+    transition: background 0.3s ease;
+  }
+  
+  .nav-links a:hover {
+    background-color: #6c63ff;
+    color: white;
+  }
+  
+  /* Hero Section (with background image & overlay) */
+  .hero {
+    position: relative;
+    height: 100vh;
+    background: url('gedung-nano.jpg') no-repeat center center/cover; /* <- Add your background image here */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+  }
+  
+  .overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Helps create contrast for text */
+    z-index: 1;
+  }
+
+ .hero-content {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+}
+  
+  .hero h1 {
+    font-size: 4rem;
+    font-weight: 800;
+    line-height: 1.2;
+  }
+  
+  .highlighted {
+    color: #6c63ff;
+  }
+  
+  .intro-text {
+    font-size: 1.3rem;
+    margin-bottom: 30px;
+  }
+  
+  .cta-btn {
+    padding: 15px 30px;
+    background-color: #ff7675;
+    color: white;
+    border-radius: 50px;
+    text-decoration: none;
+    transition: 0.3s ease;
+  }
+  
+  .cta-btn:hover {
+    background-color: #ee5959;
+    transform: translateY(-5px);
+  }
+  
+  /* About Us Section */
+  .about {
+    padding: 100px 10px;
+    background-color: #fff;
+    text-align: center;
+  }
+  
+  .about h2 {
+    font-size: 2.5rem;
+    margin-bottom: 20px;
+  }
+  
+  .about p {
+    font-size: 1.1rem;
+    color: #555;
+    margin-bottom: 50px;
+  }
+  
+  /* Features Section */
+  .features {
+    background-color: #f4f4f9;
+    padding: 100px 20px;
+    text-align:center;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .features h2 {
+    font-size: 2.5rem;
+    margin-bottom: 40px;
+  }
+  
+  .features-grid {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    text-align: center;
+  }
+  
+  .feature-card {
+    background-color: #fff;
+    padding: 40px;
+    border-radius: 20px;
+    box-shadow: 0px 10px 25px rgba(0, 0, 0, 0.05);
+    transition: transform 0.3s ease;
+    text-align: center;
+  }
+  
+  .feature-card:hover {
+    transform: translateY(-10px);
+  }
+  
+  .feature-card i {
+    font-size: 3rem;
+    color: #6c63ff;
+    margin-bottom: 20px;
+  }
+  
+  .feature-card h4 {
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+  }
+  
+  /* Team Section */
+  .team {
+    padding: 100px 20px;
+    background-color: white;
+    text-align: center;
+  }
+  
+  .team h2 {
+    font-size: 2.5rem;
+    margin-bottom: 50px;
+  }
+
+  .team-members {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 50px;
+  }
+  
+  .member img {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: cover; /* Stop distortion */
+    margin-bottom: 10px;
+  }
+
+  .member img:hover {
+    transform: scale(1.1);
+  }
+  
+  .member h3 {
+    margin-top: 10px;
+    font-size: 1.25rem;
+  }
+  
+  .member {
+    text-align: center;
+  }
+  
+  /* Contact Section */
+  .contact {
+    padding: 100px 20px;
+    background-color: #6c63ff;
+    text-align: center;
+    color: white;
+  }
+  
+  .contact h2 {
+    font-size: 2.5rem;
+    margin-bottom: 20px;
+  }
+  
+  .contact p {
+    font-size: 1.1rem;
+    margin-bottom: 40px;
+  }
+  
+  .contact .cta-btn {
+    background-color: #ff7675;
+    padding: 15px 30px;
+    border-radius: 50px;
+    text-decoration: none;
+    color: white;
+  }
+  
+  /* Footer */
+  footer {
+    padding: 20px;
+    background-color: #333;
+    color: white;
+    text-align: center;
+  }
+  
+  footer p {
+    margin: 0;
+  }
+  
+  /* Responsive Styles */
+  @media only screen and (max-width: 768px) {
+    
+    .features-grid, .team-members {
+      flex-direction: column;
+      gap: 20px;
+    }
+  
+    .hero h1 {
+      font-size: 3rem;
+    }
+  
+    .cta-btn {
+      font-size: 1rem;
+    }
+  }
+
+  :root {
+    --primary-color: #ff6363; /* New Primary (Coral Red) */
+    --secondary-color: #3b82f6; /* New Secondary Color (Blue) */
+    --accent-color: #10b981; /* Accent color (Green) */
+    --text-primary: #ffffff; /* White text for contrast */
+    --text-secondary: #333333; /* Dark text */
+    --background-gradient: linear-gradient(135deg, #3b82f6, #a855f7); /* Apply gradient */
+  }
+  
+  /* Hero Section */
+  
+  .overlay {
+    background-color: rgba(0, 0, 0, 0.3); /* Add subtle overlay transparency, so the background gradient shows through */
+  }
+  
+  /* CTA (Call-to-action) Button */
+  .cta-btn {
+    background-color: var(--primary-color); /* Brighter Coral Red */
+    color: var(--text-primary);
+    transition: background-color 0.3s ease;
+  }
+  
+  .cta-btn:hover {
+    background-color: var(--secondary-color); /* Coral Red to Blue transition */
+    transform: scale(1.05);
+  }
+  
+  /* Team Section */
+.member img {
+  border: 5px solid var(--accent-color); /* Add Bright Green border to make team photos pop */
+  transition: transform 0.3s ease, border-color 0.3s ease;
+}
+
+.member img:hover {
+  transform: scale(1.1);
+  border-color: var(--secondary-color); /* Change border to blue color on hover */
+}
+  
+  /* Feature Section */
+  .features-grid .feature-card {
+    background-color: white; /* Retains white background for clarity */
+    border-top: 5px solid var(--secondary-color); /* Accent with blue on top */
+    transition: transform 0.3s ease, border-color 0.3s ease;
+  }
+  
+  .features-grid .feature-card i {
+    color: var(--primary-color); /* Icons in Coral Red */
+  }
+  
+  .features-grid .feature-card:hover {
+    transform: translateY(-10px);
+    border-top: 5px solid var(--accent-color); /* Green when hovered */
+  }
+  
+  /* Footer */
+  footer {
+    background-color: var(--secondary-color);
+    color: white; /* Ensures sufficient contrast with the bright blue footer */
+  }
+  
+  /* Contact Section */
+  .contact {
+    background-color: var(--primary-color); /* Coral Red background */
+    color: var(--text-primary);
+  }
+  
+  .contact .cta-btn:hover {
+    background-color: var(--accent-color); /* Green button background on hover */
+  }
+
+  /* General reset for animation */
+.animate-on-scroll {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+  
+  /* When in view */
+  .show-element {
+    opacity: 1;
+    transform: none; /* Resets the vertical translation */
+  }
+  
+  /* Optional extra styles for fancier effects */
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+  
+  .show-element { 
+    opacity: 1;
+    animation: fade-in 0.8s forwards; /* Using a fade-in animation */
+  }
+
+  /* For the container around the card */
+.project-section .container {
+    display: flex;
+    justify-content: center;   /* Centers horizontally */
+    align-items: center;       /* Centers vertically in the parent container */
+    min-height: 50vh;          /* Ensures the container has height to allow vertical centering */
+    padding: 20px;
+  }
+  
+  /* Styling applied to the card */
+  .project-card {
+    background-color: white;
+    border-radius: 15px;
+    padding: 30px;
+    box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.1);  /* Add some shadow for effect */
+    text-align: center;        /* Center text inside the card */
+    max-width: 500px;          /* Optional: Sets a max-width to prevent the card from being too wide */
+  }
