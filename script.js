@@ -1,53 +1,45 @@
-// Fade in when scrolling into section 
-window.addEventListener("scroll", () => {
-    const reveals = document.querySelectorAll(".feature-item, .testimonial");
-  
-    reveals.forEach((item) => {
-      const windowHeight = window.innerHeight;
-      const elementTop = item.getBoundingClientRect().top;
-      const elementVisible = 150;
-      
-      // Add class to apply animation when item is in view
-      if (elementTop < windowHeight - elementVisible) {
-        item.classList.add("active");
-      }
-    });
-  });
-  
-  // CSS Class for animation
-  document.addEventListener("DOMContentLoaded", () => {
-    const style = document.createElement('style');
-    document.head.appendChild(style);
-  
-    style.sheet.insertRule(`
-      .feature-item,
-      .testimonial {
-        opacity: 0;
-        transform: translateY(20px);
-        transition: 0.6s ease-in-out;
-      }
-    `);
-  
-    style.sheet.insertRule(`
-      .feature-item.active,
-      .testimonial.active {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    `);
-  });
-
 /* script.js */
 document.addEventListener('DOMContentLoaded', () => {
-    const animatedElements = document.querySelectorAll('.animate-on-scroll');
-  
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('show-element');
-        }
-      });
+  const links = document.querySelectorAll('.nav-links a');
+  const animatedElements = document.querySelectorAll('.animate-on-scroll');
+
+  // Function to handle scroll animation
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('show-element');
+      } else {
+        entry.target.classList.remove('show-element'); // Remove class when not in view
+      }
     });
-  
-    animatedElements.forEach(element => observer.observe(element));
   });
+
+  // Observe each animated element
+  animatedElements.forEach(el => observer.observe(el));
+
+  // Handle navigation clicks
+  links.forEach(link => {
+    link.addEventListener('click', (e) => {
+      e.preventDefault(); // Prevent default anchor click behavior
+
+      const targetId = e.target.getAttribute('href'); // Fetch the target section’s ID
+      const targetSection = document.querySelector(targetId);
+
+      // Scroll to the target section with smooth behavior
+      window.scrollTo({
+        top: targetSection.offsetTop,
+        behavior: 'smooth'
+      });
+
+      // Reset animation classes
+      animatedElements.forEach(el => {
+        el.classList.remove('show-element'); // Remove any visible classes before scrolling
+      });
+
+      // Timeout to ensure the animation restarts when elements come into view
+      setTimeout(() => {
+        targetSection.classList.add('show-element'); // Re-add class to animate when back in view
+      }, 100);
+    });
+  });
+});
