@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fibonacci Generator</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <header>
+        <h1>Fibonacci Sequence</h1>
+    </header>
+    <nav>
+        <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="/cv">CV</a></li>
+            <li><a href="/portofolio">Portofolio</a></li>
+            <li><a href="/biodata">Biodata</a></li>
+            <li><a href="/contact">Contact</a></li>
+            <li><a href="/fibonacci">Fibonacci Generator</a></li>
+            <li><a href="/csv">View CSV as JSON</a></li>
+            <li><a href="/form">Form Submission</a></li>
+        </ul>
+    </nav>
+    <form method="POST">
+        <label for="number">Enter a number:</label>
+        <input type="number" id="number" name="number" required><br>
+        <button type="submit">Submit</button>
+    </form>
+    {% if result %}
+        <p>Fibonacci Series:</p>
+        <p>{{ result }}</p>
+    {% endif %}
+</body>
+</html>
