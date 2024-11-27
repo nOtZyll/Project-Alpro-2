@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pengukuran Dimensi Barang</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background-color: #f4f4f9;
+            text-align: center;
+        }
+        h1 {
+            color: #333;
+        }
+        form {
+            margin-top: 20px;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background: white;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        input[type="file"] {
+            display: block;
+            margin: 20px auto;
+            padding: 10px;
+        }
+        button {
+            display: block;
+            margin: 0 auto;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        #result {
+            margin-top: 20px;
+            font-size: 18px;
+        }
+        #loading {
+            font-size: 16px;
+            color: gray;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <h1>Pengukuran Dimensi Barang</h1>
+    <p>Unggah gambar barang bersama dengan referensi ukuran (misalnya kartu kredit) untuk menghitung dimensinya.</p>
+    <form id="uploadForm" enctype="multipart/form-data">
+        <input type="file" name="file" accept="image/*" required />
+        <button type="submit">Unggah dan Hitung</button>
+    </form>
+
+    <div id="loading">⏳ Sedang memproses... Mohon tunggu...</div>
+    <div id="result"></div>
+
+    <script>
+        const form = document.getElementById("uploadForm");
+        const resultDiv = document.getElementById("result");
+        const loadingDiv = document.getElementById("loading");
+
+        form.addEventListener("submit", async (e) => {
+            e.preventDefault(); // Mencegah reload halaman
+            const formData = new FormData(form);
+            
+            // Tampilkan loading
+            loadingDiv.style.display = "block";
+            resultDiv.innerHTML = "";
+
+            try {
+                // Kirim data ke backend
+                const response = await fetch("/upload", {
+                    method: "POST",
+                    body: formData,
+                });
+
+                // Jika request gagal
+                if (!response.ok) {
+                    const errorMessage = await response.text();
+                    throw new Error(errorMessage);
+                }
+
+                // Parse response JSON
+                const data = await response.json();
+
+                // Tampilkan hasil dimensi
+                resultDiv.innerHTML = `
+                    <p><b>Lebar Barang:</b> ${data.item_width} cm</p>
+                    <p><b>Tinggi Barang:</b> ${data.item_height} cm</p>
+                `;
+            } catch (error) {
+                // Tampilkan pesan error
+                resultDiv.innerHTML = `<p style="color: red;">❌ Gagal: ${error.message}</p>`;
+            } finally {
+                loadingDiv.style.display = "none"; // Sembunyikan loading
+            }
+        });
+    </script>
+</body>
+</html>
