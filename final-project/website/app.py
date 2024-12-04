@@ -1,146 +1,97 @@
-from flask import Flask, request, render_template, jsonify
-from yolov5 import detect
-import cv2
+from flask import Flask, request, jsonify, send_file, url_for
+from ultralytics import YOLO
 import os
-import torch
-import numpy as np
-import pathlib  # Import the pathlib module
-import sys
-# Add the yolov5 directory to the Python path
-sys.path.append(str(pathlib.Path(__file__).resolve().parent / 'yolov5'))
+from flask_cors import CORS
+from pathlib import Path
 
-# Now you can import detect from the YOLOv5 application
-from detect import run  # Adjust if you need to import a specific function
+app = Flask(__name__)
+CORS(app)
 
-# Backup the original PosixPath
-posix_backup = pathlib.PosixPath
-try:
-    # Override PosixPath with WindowsPath
-    pathlib.PosixPath = pathlib.WindowsPath
+# Load YOLO model
+model = YOLO("models/yolo11n.pt")  # Ensure the model exists in the 'models' folder
 
-    # Inisialisasi Flask
-    app = Flask(__name__)
-    UPLOAD_FOLDER = "uploads"
-    app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
+# Folders for file uploads and results
+UPLOAD_FOLDER = "uploads/"
+RESULT_FOLDER = "static/"
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+os.makedirs(RESULT_FOLDER, exist_ok=True)
 
-    # Pastikan folder upload ada
-    if not os.path.exists(UPLOAD_FOLDER):
-        os.makedirs(UPLOAD_FOLDER)
+def calculate_dimensions(image_path, conversion_ratio):
+    """
+    Calculates the dimensions of the detected object in real-world units
+    based on the bounding box output of the YOLO model.
+    """
+    # Run YOLO model inference
+    results = model(image_path)
 
-    # Path ke model YOLO yang sudah Anda latih
-    MODEL_PATH = "D:/alpro-finals-web/yolov5/weigths/best.pt" # Update ke path model Anda
-    model = torch.hub.load("ultralytics/yolov5", "custom", path=MODEL_PATH, force_reload=True)
+    # Check if results exist and are valid
+    if not results or len(results) == 0:
+        return None, None, None  # No results
 
-    # Path ke template referensi
-    REFERENCE_TEMPLATE_PATH = "D:/alpro-finals-web/reference_templates/reference.jpg"
+    # Access the first result (assuming single image processing)
+    predictions = results[0]
 
-        # Fungsi menghitung dimensi benda
-    def calculate_dimensions(img_size, item_bbox, ref_bbox, ref_real_cm):
-        """
-        Menghitung dimensi benda berdasarkan bounding box dan rasio referensi skala.
-        """
-        # Ukuran bounding box (dalam piksel)
-        # Assume these values are either tensors or numbers (floats/ints).
-        item_width_px = item_bbox[2] * img_size
-        item_height_px = item_bbox[3] * img_size
-        ref_width_px = ref_bbox[2] * img_size
+    # Ensure boxes are available
+    if not hasattr(predictions, 'boxes') or predictions.boxes is None:
+        return None, None, None  # No detections
 
-        # Rasio piksel ke ukuran nyata
-        scale_ratio = ref_real_cm / ref_width_px  # Use directly, ref_width_px should be an int or float
+    # Access the bounding boxes
+    boxes = predictions.boxes
+    if len(boxes) == 0:
+        return None, None, None  # No detected objects
 
-        # Hitung dimensi benda
-        item_real_width = item_width_px * scale_ratio
-        item_real_height = item_height_px * scale_ratio
+    # Extract the first bounding box
+    xyxy_box = boxes.xyxy.cpu().numpy()[0]  # Convert tensor to NumPy
+    x_min, y_min, x_max, y_max = map(float, xyxy_box[:4])  # Convert coordinates to float
 
-        # Convert to float for rounding if necessary
-        return round(float(item_real_width), 2), round(float(item_real_height), 2)
+    # Calculate pixel dimensions
+    width_pixels = x_max - x_min
+    height_pixels = y_max - y_min
 
-    # Template matching dengan OpenCV jika YOLO gagal
-    def detect_reference_with_template(image_path):
-        ref_real_cm = 8.56  # Panjang kartu kredit (cm)
+    # Convert pixel dimensions to real-world dimensions
+    length = width_pixels * conversion_ratio  # Real-world length (e.g., cm)
+    width = height_pixels * conversion_ratio  # Real-world width (e.g., cm)
 
-        img = cv2.imread(image_path, cv2.IMREAD_GRAYSCALE)
-        template = cv2.imread(REFERENCE_TEMPLATE_PATH, cv2.IMREAD_GRAYSCALE)
+    # Ensure all returns are serializable
+    return image_path, length, width
 
-        result = cv2.matchTemplate(img, template, cv2.TM_CCOEFF_NORMED)
-        _, max_val, _, max_loc = cv2.minMaxLoc(result)
 
-        if max_val < 0.5:  # Confidence threshold
-            return None  # Tidak ada pola referensi yang cocok
+@app.route('/predict', methods=['POST'])
+def predict():
+    """
+    Perform object detection on two images and calculate real-world dimensions.
+    """
+    if "length_width_image" not in request.files or "height_image" not in request.files:
+        return jsonify({"error": "Both images are required"}), 400
 
-        h, w = template.shape
-        x, y = max_loc
-        ref_bbox = [x, y, w, h]  # Format [x, y, width, height]
+    # Save the uploaded images
+    lw_image = request.files["length_width_image"]
+    h_image = request.files["height_image"]
 
-        return ref_bbox, ref_real_cm
+    lw_path = os.path.join(UPLOAD_FOLDER, lw_image.filename)
+    h_path = os.path.join(UPLOAD_FOLDER, h_image.filename)
+    lw_image.save(lw_path)
+    h_image.save(h_path)
 
-    # Home route
-    @app.route("/")
-    def home():
-        return render_template("index.html")
+    # Assume conversion ratio from prior calibration for real-world scaling
+    conversion_ratio = 0.01279  # Example: 1 pixel = 0.05 cm
 
-    # Route untuk menerima gambar dan menjalankan deteksi
-    @app.route("/upload", methods=["POST"])
-    def upload_image():
-        if "file" not in request.files:
-            return "No file uploaded", 400
+    # Calculate dimensions for both images
+    lw_result, length, width = calculate_dimensions(lw_path, conversion_ratio)
+    h_result, _, height = calculate_dimensions(h_path, conversion_ratio)
 
-        file = request.files["file"]
-        if file.filename == "":
-            return "No file selected", 400
+    # Check if dimensions were successfully calculated
+    if lw_result is None or h_result is None:
+        return jsonify({"error": "Object not detected in one or both images."}), 400
 
-        # Simpan file di folder uploads
-        filepath = os.path.join(app.config["UPLOAD_FOLDER"], file.filename)
-        file.save(filepath)
-
-        # Jalankan YOLOv5
-        results = model(filepath)
-
-        # Parse hasil deteksi
-        detections = results.xywh[0]  # Bounding box dalam format [x_center, y_center, width, height, confidence, class]
-        items = []
-        references = []
-
-        for det in detections:
-            class_id = int(det[-1])  # class_id: 0 = item, 1 = reference
-            if class_id == 0:
-                items.append(det)
-            elif class_id == 1:
-                references.append(det)
-
-        # Jika referensi tidak terdeteksi, gunakan template matching sebagai fallback
-        if len(references) == 0:
-            ref_template_match = detect_reference_with_template(filepath)
-            if ref_template_match:
-                ref_bbox, ref_real_cm = ref_template_match
-            else:
-                # Tidak ada referensi, gunakan fallback berdasarkan ukuran gambar
-                img_size = results.xywh[0].shape[1] if results.xywh else None
-                ref_real_cm = 8.56  # Default panjang referensi kartu kredit
-                ref_bbox = [0, 0, img_size, 0]  # Anggap seluruh width gambar sebagai referensi
-        else:
-            ref_bbox = references[0]  # Ambil referensi dengan confidence tertinggi dari YOLO
-            ref_real_cm = 8.56  # Panjang kartu kredit (asumsi)
-
-        # Ambil bounding box item
-        if len(items) == 0:
-            return "Failed to detect item in the image", 400
-        item_bbox = items[0]
-
-        # Hitung dimensi
-        img_size = results.xywh[0].shape[1] if results.xywh else None
-        item_width, item_height = calculate_dimensions(img_size, item_bbox, ref_bbox, ref_real_cm)
-
-        # Hasil JSON dikirim ke frontend
-        result = {
-            "item_width": item_width,
-            "item_height": item_height,
-        }
-        return jsonify(result)
-
-finally:
-    # Restore the original PosixPath
-    pathlib.PosixPath = posix_backup
+    # Ensure all response data is converted to JSON-serializable types
+    return jsonify({
+        "length_cm": round(float(length), 2),   # Convert numpy/float32 to native float
+        "width_cm": round(float(width), 2),    # Ensure float conversion
+        "height_cm": round(float(height), 2),  # Ensure float conversion
+        "length_width_result": os.path.relpath(lw_path).replace("\\", "/"),
+        "height_result": os.path.relpath(h_path).replace("\\", "/")
+    })
 
 if __name__ == "__main__":
     app.run(debug=True)
