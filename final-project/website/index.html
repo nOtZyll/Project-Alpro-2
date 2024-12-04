@@ -3,110 +3,173 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pengukuran Dimensi Barang</title>
+    <title>Object Dimension Detector</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
-            background-color: #f4f4f9;
-            text-align: center;
+            margin: 20px;
+            padding: 10px;
+            line-height: 1.6;
         }
-        h1 {
+
+        h1, h2, h3 {
             color: #333;
         }
+
         form {
-            margin-top: 20px;
-            padding: 20px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            background: white;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
         }
+
         input[type="file"] {
             display: block;
-            margin: 20px auto;
-            padding: 10px;
+            margin-bottom: 10px;
         }
+
         button {
-            display: block;
-            margin: 0 auto;
-            background-color: #007BFF;
+            background-color: #4CAF50;
             color: white;
             border: none;
             padding: 10px 20px;
-            border-radius: 5px;
             cursor: pointer;
         }
+
         button:hover {
-            background-color: #0056b3;
+            background-color: #45a049;
         }
-        #result {
+
+        button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+
+        .result {
             margin-top: 20px;
-            font-size: 18px;
         }
-        #loading {
-            font-size: 16px;
-            color: gray;
-            display: none;
+
+        img {
+            max-width: 100%;
+            height: auto;
+            margin-top: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        .loading {
+            font-size: 1.2em;
+            color: #666;
+        }
+
+        .error {
+            color: #d9534f;
+            border: 1px solid #d9534f;
+            padding: 10px;
+            border-radius: 4px;
+            background-color: #f9d6d5;
+            margin-top: 10px;
+        }
+
+        .image-preview {
+            margin-top: 10px;
+        }
+
+        .image-preview img {
+            max-width: 200px;
+            margin-right: 10px;
+            vertical-align: middle;
+        }
+
+        @media screen and (max-width: 600px) {
+            .image-preview img {
+                max-width: 100px;
+            }
         }
     </style>
 </head>
 <body>
-    <h1>Pengukuran Dimensi Barang</h1>
-    <p>Unggah gambar barang bersama dengan referensi ukuran (misalnya kartu kredit) untuk menghitung dimensinya.</p>
-    <form id="uploadForm" enctype="multipart/form-data">
-        <input type="file" name="file" accept="image/*" required />
-        <button type="submit">Unggah dan Hitung</button>
-    </form>
+    <h1>Object Dimension Detector</h1>
+    <form id="uploadForm">
+        <label for="lengthWidthImage">Upload Image for Length & Width:</label>
+        <input type="file" id="lengthWidthImage" name="length_width_image" accept="image/*" required>
+        <div class="image-preview" id="lwPreview"></div>
 
-    <div id="loading">⏳ Sedang memproses... Mohon tunggu...</div>
+        <label for="heightImage">Upload Image for Height:</label>
+        <input type="file" id="heightImage" name="height_image" accept="image/*" required>
+        <div class="image-preview" id="hPreview"></div>
+
+        <button type="submit" id="submitButton">Submit</button>
+    </form>
     <div id="result"></div>
 
     <script>
-        const form = document.getElementById("uploadForm");
-        const resultDiv = document.getElementById("result");
-        const loadingDiv = document.getElementById("loading");
+        const lwInput = document.getElementById('lengthWidthImage');
+        const hInput = document.getElementById('heightImage');
+        const lwPreviewDiv = document.getElementById('lwPreview');
+        const hPreviewDiv = document.getElementById('hPreview');
+        const submitButton = document.getElementById('submitButton');
+        const resultDiv = document.getElementById('result');
 
-        form.addEventListener("submit", async (e) => {
-            e.preventDefault(); // Mencegah reload halaman
-            const formData = new FormData(form);
-            
-            // Tampilkan loading
-            loadingDiv.style.display = "block";
-            resultDiv.innerHTML = "";
+        // Image preview handler
+        function showImagePreview(file, previewDiv) {
+            previewDiv.innerHTML = "";
+            if (file) {
+                const img = document.createElement('img');
+                img.src = URL.createObjectURL(file);
+                img.alt = "Image Preview";
+                previewDiv.appendChild(img);
+            }
+        }
+
+        lwInput.addEventListener('change', function () {
+            showImagePreview(lwInput.files[0], lwPreviewDiv);
+        });
+
+        hInput.addEventListener('change', function () {
+            showImagePreview(hInput.files[0], hPreviewDiv);
+        });
+
+        document.getElementById('uploadForm').addEventListener('submit', async function (e) {
+            e.preventDefault();
+
+            const lengthWidthImage = lwInput.files[0];
+            const heightImage = hInput.files[0];
+            const formData = new FormData();
+            formData.append('length_width_image', lengthWidthImage);
+            formData.append('height_image', heightImage);
+
+            resultDiv.innerHTML = '<div class="loading">Loading... Please wait.</div>';
+            submitButton.disabled = true;
 
             try {
-                // Kirim data ke backend
-                const response = await fetch("/upload", {
-                    method: "POST",
+                const response = await fetch('http://127.0.0.1:5000/predict', {
+                    method: 'POST',
                     body: formData,
                 });
 
-                // Jika request gagal
+                // Check if the response is ok
                 if (!response.ok) {
-                    const errorMessage = await response.text();
-                    throw new Error(errorMessage);
+                    throw new Error(`Server responded with ${response.status}: ${response.statusText}`);
                 }
 
-                // Parse response JSON
                 const data = await response.json();
-
-                // Tampilkan hasil dimensi
                 resultDiv.innerHTML = `
-                    <p><b>Lebar Barang:</b> ${data.item_width} cm</p>
-                    <p><b>Tinggi Barang:</b> ${data.item_height} cm</p>
+                    <h2>Dimensions:</h2>
+                    <p><strong>Length:</strong> ${data.length_cm} cm</p>
+                    <p><strong>Width:</strong> ${data.width_cm} cm</p>
+                    <p><strong>Height:</strong> ${data.height_cm} cm</p>
+                    <h3>Detected Images:</h3>
+                    <div>
+                        <p><strong>Length & Width Image:</strong></p>
+                        <img src="http://127.0.0.1:5000/${data.length_width_result}" alt="Length & Width Detection">
+                    </div>
+                    <div>
+                        <p><strong>Height Image:</strong></p>
+                        <img src="http://127.0.0.1:5000/${data.height_result}" alt="Height Detection">
+                    </div>
                 `;
             } catch (error) {
-                // Tampilkan pesan error
-                resultDiv.innerHTML = `<p style="color: red;">❌ Gagal: ${error.message}</p>`;
+                resultDiv.innerHTML = `<div class="error">Error: ${error.message}</div>`;
             } finally {
-                loadingDiv.style.display = "none"; // Sembunyikan loading
+                submitButton.disabled = false;
             }
         });
     </script>
