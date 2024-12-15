@@ -156,14 +156,11 @@
                     <p><strong>Length:</strong> ${data.length_cm} cm</p>
                     <p><strong>Width:</strong> ${data.width_cm} cm</p>
                     <p><strong>Height:</strong> ${data.height_cm} cm</p>
+                    <p><strong>Recommended Package:</strong> ${data.package_category}</p>
                     <h3>Detected Images:</h3>
                     <div>
-                        <p><strong>Length & Width Image:</strong></p>
-                        <img src="http://127.0.0.1:5000/${data.length_width_result}" alt="Length & Width Detection">
-                    </div>
-                    <div>
-                        <p><strong>Height Image:</strong></p>
-                        <img src="http://127.0.0.1:5000/${data.height_result}" alt="Height Detection">
+                        <p><strong>Bounding Box Image:</strong></p>
+                        <img src="http://127.0.0.1:5000/static/results/${data.bounding_box_image}" alt="Bounding Box Detection">
                     </div>
                 `;
             } catch (error) {
