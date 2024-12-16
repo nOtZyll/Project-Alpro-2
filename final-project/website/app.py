@@ -79,40 +79,47 @@ def classify_package_dimensions(length_cm, width_cm, height_cm):
 def predict():
     if 'length_width_image' not in request.files or 'height_image' not in request.files:
         return jsonify({"error": "Both images are required."}), 400
-    
-    # Get images and unit
+
+    if 'unit' not in request.form:
+        return jsonify({"error": "Unit is required."}), 400
+
     lw_image = request.files['length_width_image']
     h_image = request.files['height_image']
-    unit = request.form['unit']  # Get the selected unit
+    unit = request.form['unit']  # Mendapatkan satuan dari form
 
-    # Define conversion factors
-    conversion_factors = {
-        'mm': 0.001,
-        'cm': 0.01,
-        'm': 1,
-        'inches': 0.0254
-    }
-
-    if unit not in conversion_factors:
-        return jsonify({"error": "Invalid unit selected."}), 400
-
-    # Save images
     lw_path = UPLOAD_FOLDER / lw_image.filename
     h_path = UPLOAD_FOLDER / h_image.filename
     lw_image.save(lw_path)
     h_image.save(h_path)
 
-    # Calculate conversion ratio for the selected unit
-    conversion_ratio = conversion_factors[unit]
+    conversion_ratio = 0.0127  # Contoh: 1 piksel = 0.0127 cm
 
-    # Calculate dimensions and draw bounding boxes
-    lw_result, length, width, lw_output_image_path = calculate_dimensions(lw_path, conversion_ratio)
-    h_result, height, h_output_image_path = calculate_dimensions(h_path, conversion_ratio)
+    # Hitung dimensi dan gambar kotak pembatas
+    lw_result, length_cm, width_cm, lw_output_image_path = calculate_dimensions(lw_path, conversion_ratio)
+    h_result, _, height_cm, h_output_image_path = calculate_dimensions(h_path, conversion_ratio)
 
     if lw_result is None or h_result is None:
         return jsonify({"error": "Object not detected in one or both images."}), 400
 
-    # Classify the package dimensions
+    # Konversikan ke satuan yang dipilih
+    if unit == 'mm':
+        length = length_cm * 10
+        width = width_cm * 10
+        height = height_cm * 10
+    elif unit == 'm':
+        length = length_cm / 100
+        width = width_cm / 100
+        height = height_cm / 100
+    elif unit == 'inches':
+        length = length_cm / 2.54
+        width = width_cm / 2.54
+        height = height_cm / 2.54
+    else:  # 'cm' 
+        length = length_cm
+        width = width_cm
+        height = height_cm
+
+    # Klasifikasikan dimensi paket
     category = classify_package_dimensions(length, width, height)
 
     return jsonify({
@@ -121,8 +128,8 @@ def predict():
         "height": round(float(height), 2),
         "length_width_result": f"uploads/{lw_image.filename}",
         "height_result": f"uploads/{h_image.filename}",
-        "bounding_box_image": f"{lw_output_image_path.name}",
-        "package_category": category
+        "bounding_box_image": f"{lw_output_image_path.name}",  # Kembalikan nama file
+        "package_category": category  # Sertakan kategori paket
     })
 
 if __name__ == "__main__":

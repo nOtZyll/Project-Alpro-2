@@ -5,84 +5,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Object Dimension Detector</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-            padding: 10px;
-            line-height: 1.6;
-        }
-
-        h1, h2, h3 {
-            color: #333;
-        }
-
-        form {
-            margin-bottom: 20px;
-        }
-
-        input[type="file"] {
-            display: block;
-            margin-bottom: 10px;
-        }
-
-        button {
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            cursor: pointer;
-        }
-
-        button:hover {
-            background-color: #45a049;
-        }
-
-        button:disabled {
-            background-color: #ccc;
-            cursor: not-allowed;
-        }
-
-        .result {
-            margin-top: 20px;
-        }
-
-        img {
-            max-width: 100%;
-            height: auto;
-            margin-top: 10px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-        }
-
-        .loading {
-            font-size: 1.2em;
-            color: #666;
-        }
-
-        .error {
-            color: #d9534f;
-            border: 1px solid #d9534f;
-            padding: 10px;
-            border-radius: 4px;
-            background-color: #f9d6d5;
-            margin-top: 10px;
-        }
-
-        .image-preview {
-            margin-top: 10px;
-        }
-
-        .image-preview img {
-            max-width: 200px;
-            margin-right: 10px;
-            vertical-align: middle;
-        }
-
-        @media screen and (max-width: 600px) {
-            .image-preview img {
-                max-width: 100px;
-            }
-        }
+        body { font-family: Arial, sans-serif; margin: 20px; padding: 10px; line-height: 1.6; }
+        h1, h2, h3 { color: #333; }
+        form { margin-bottom: 20px; }
+        input[type="file"] { display: block; margin-bottom: 10px; }
+        button { background-color: #4CAF50; color: white; border: none; padding: 10px 20px; cursor: pointer; }
+        button:hover { background-color: #45a049; }
+        button:disabled { background-color: #ccc; cursor: not-allowed; }
+        .result { margin-top: 20px; }
+        img { max-width: 100%; height: auto; margin-top: 10px; border: 1px solid #ddd; border-radius: 4px; }
+        .loading { font-size: 1.2em; color: #666; }
+        .error { color: #d9534f; border: 1px solid #d9534f; padding: 10px; border-radius: 4px; background-color: #f9d6d5; margin-top: 10px; }
+        .image-preview { margin-top: 10px; }
+        .image-preview img { max-width: 200px; margin-right: 10px; vertical-align: middle; }
+        @media screen and (max-width: 600px) { .image-preview img { max-width: 100px; } }
     </style>
 </head>
 <body>
@@ -95,8 +31,9 @@
         <label for="heightImage">Upload Image for Height:</label>
         <input type="file" id="heightImage" name="height_image" accept="image/*" required>
         <div class="image-preview" id="hPreview"></div>
+
         <label for="unit">Choose unit:</label>
-        <select name="unit" required>
+        <select name="unit" id="unit" required>
             <option value="mm">Millimeter (mm)</option>
             <option value="cm">Centimeter (cm)</option>
             <option value="m">Meter (m)</option>
@@ -114,6 +51,7 @@
         const hPreviewDiv = document.getElementById('hPreview');
         const submitButton = document.getElementById('submitButton');
         const resultDiv = document.getElementById('result');
+        const unitSelect = document.getElementById('unit');
 
         // Image preview handler
         function showImagePreview(file, previewDiv) {
@@ -139,9 +77,12 @@
 
             const lengthWidthImage = lwInput.files[0];
             const heightImage = hInput.files[0];
+            const unit = unitSelect.value; // Mendapatkan unit yang dipilih
+
             const formData = new FormData();
             formData.append('length_width_image', lengthWidthImage);
             formData.append('height_image', heightImage);
+            formData.append('unit', unit); // Menambahkan unit ke FormData
 
             resultDiv.innerHTML = '<div class="loading">Loading... Please wait.</div>';
             submitButton.disabled = true;
@@ -152,7 +93,6 @@
                     body: formData,
                 });
 
-                // Check if the response is ok
                 if (!response.ok) {
                     throw new Error(`Server responded with ${response.status}: ${response.statusText}`);
                 }
@@ -160,9 +100,9 @@
                 const data = await response.json();
                 resultDiv.innerHTML = `
                     <h2>Dimensions:</h2>
-                    <p><strong>Length:</strong> ${data.length_cm} cm</p>
-                    <p><strong>Width:</strong> ${data.width_cm} cm</p>
-                    <p><strong>Height:</strong> ${data.height_cm} cm</p>
+                    <p><strong>Length:</strong> ${data.length} ${unit}</p>
+                    <p><strong>Width:</strong> ${data.width} ${unit}</p>
+                    <p><strong>Height:</strong> ${data.height} ${unit}</p>
                     <p><strong>Recommended Package:</strong> ${data.package_category}</p>
                     <h3>Detected Images:</h3>
                     <div>
