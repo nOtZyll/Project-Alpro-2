@@ -79,20 +79,35 @@ def classify_package_dimensions(length_cm, width_cm, height_cm):
 def predict():
     if 'length_width_image' not in request.files or 'height_image' not in request.files:
         return jsonify({"error": "Both images are required."}), 400
-
+    
+    # Get images and unit
     lw_image = request.files['length_width_image']
     h_image = request.files['height_image']
+    unit = request.form['unit']  # Get the selected unit
 
+    # Define conversion factors
+    conversion_factors = {
+        'mm': 0.001,
+        'cm': 0.01,
+        'm': 1,
+        'inches': 0.0254
+    }
+
+    if unit not in conversion_factors:
+        return jsonify({"error": "Invalid unit selected."}), 400
+
+    # Save images
     lw_path = UPLOAD_FOLDER / lw_image.filename
     h_path = UPLOAD_FOLDER / h_image.filename
     lw_image.save(lw_path)
     h_image.save(h_path)
 
-    conversion_ratio = 0.0127  # Example: 1 pixel = 0.0127 cm
+    # Calculate conversion ratio for the selected unit
+    conversion_ratio = conversion_factors[unit]
 
     # Calculate dimensions and draw bounding boxes
     lw_result, length, width, lw_output_image_path = calculate_dimensions(lw_path, conversion_ratio)
-    h_result, _, height, h_output_image_path = calculate_dimensions(h_path, conversion_ratio)
+    h_result, height, h_output_image_path = calculate_dimensions(h_path, conversion_ratio)
 
     if lw_result is None or h_result is None:
         return jsonify({"error": "Object not detected in one or both images."}), 400
@@ -101,13 +116,13 @@ def predict():
     category = classify_package_dimensions(length, width, height)
 
     return jsonify({
-        "length_cm": round(float(length), 2),
-        "width_cm": round(float(width), 2),
-        "height_cm": round(float(height), 2),
+        "length": round(float(length), 2),
+        "width": round(float(width), 2),
+        "height": round(float(height), 2),
         "length_width_result": f"uploads/{lw_image.filename}",
         "height_result": f"uploads/{h_image.filename}",
-        "bounding_box_image": f"{lw_output_image_path.name}",  # Return filename only
-        "package_category": category  # Include the package category
+        "bounding_box_image": f"{lw_output_image_path.name}",
+        "package_category": category
     })
 
 if __name__ == "__main__":

@@ -95,6 +95,13 @@
         <label for="heightImage">Upload Image for Height:</label>
         <input type="file" id="heightImage" name="height_image" accept="image/*" required>
         <div class="image-preview" id="hPreview"></div>
+        <label for="unit">Choose unit:</label>
+        <select name="unit" required>
+            <option value="mm">Millimeter (mm)</option>
+            <option value="cm">Centimeter (cm)</option>
+            <option value="m">Meter (m)</option>
+            <option value="inches">Inches (in)</option>
+        </select>
 
         <button type="submit" id="submitButton">Submit</button>
     </form>
