@@ -1,0 +1,150 @@
+/* Global Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+/* Body Styling */
+body {
+    background: linear-gradient(to right, #0b1e58, #153a8a, #1e4aa3);
+    color: #fff;
+    line-height: 1.8;
+    background-size: cover;
+}
+
+/* Navbar Styling */
+nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 30px;
+    background: #fff;
+    color: #333;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+body {
+    padding-top: 60px; /* To offset for the fixed navbar */
+}
+
+.logo img {
+    height: 40px; /* Adjust the height as needed */
+    width: auto; /* Maintain the aspect ratio */
+    display: block;
+}
+
+ul {
+    list-style: none;
+    display: flex;
+    gap: 20px;
+}
+
+ul li a {
+    text-decoration: none;
+    color: #333;
+    font-size: 1.1em;
+}
+
+.contact-btn {
+    background-color: #224AB4;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.contact-btn:hover {
+    background-color: #173A7A;
+}
+
+
+/* Container Styling */
+.container {
+    margin: 80px auto;
+    width: 80%;
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+/* Form Section */
+form {
+    width: 50%;
+}
+
+.input-group {
+    margin-bottom: 20px;
+}
+
+label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+input[type="file"] {
+    margin-bottom: 10px;
+}
+
+.units {
+    margin-bottom: 20px;
+}
+
+select {
+    padding: 5px;
+    font-size: 1rem;
+}
+
+button#submitButton {
+    background-color: #28a745;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+}
+
+button#submitButton:hover {
+    background-color: #218838;
+}
+
+/* Image Preview Section */
+/* Kontainer untuk kedua kotak image preview */
+.image-preview-container {
+    display: flex; /* Menyusun kotak secara horizontal */
+    gap: 20px; /* Jarak antar kotak */
+    justify-content: space-between; /* Agar kotak berada pada posisi yang merata */
+    width: 100%;
+}
+
+/* Styling untuk kotak preview */
+.image-preview-box {
+    width: 100%; /* Menentukan lebar kotak agar bersebelahan */
+    aspect-ratio: 1;
+    background: rgba(255, 255, 255, 0.3);
+    display: flex;
+    justify-content: center; /* Posisi gambar di tengah horizontal */
+    align-items: center; /* Posisi gambar di tengah vertikal */
+    border-radius: 10px;
+    border: 2px dashed #fff;
+    overflow: hidden;
+    color: #fff;
+    font-size: 1.1rem;
+    font-weight: bold;
+}
+
+.image-preview-box img {
+    max-width: 90%; /* Gambar tidak melebihi lebar box */
+    max-height: 90%; /* Gambar tidak melebihi tinggi box */
+    object-fit: contain; /* Menjaga rasio gambar */
+}
+
