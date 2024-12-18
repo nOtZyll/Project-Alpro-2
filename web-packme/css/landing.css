@@ -1,0 +1,463 @@
+/* Global Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+/* Body Styling */
+body {
+    background: linear-gradient(to right, #0b1e58, #153a8a, #1e4aa3);
+    color: #fff;
+    line-height: 1.8;
+    background-size: cover;
+}
+
+/* Navbar Styling */
+nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 30px;
+    background: #fff;
+    color: #333;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+body {
+    padding-top: 60px; /* To offset for the fixed navbar */
+}
+
+.logo img {
+    height: 40px; /* Adjust the height as needed */
+    width: auto; /* Maintain the aspect ratio */
+    display: block;
+}
+
+ul {
+    list-style: none;
+    display: flex;
+    gap: 20px;
+}
+
+ul li a {
+    text-decoration: none;
+    color: #333;
+    font-size: 1.1em;
+}
+
+.contact-btn {
+    text-decoration: none;
+    background-color: #224AB4;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.contact-btn:hover {
+    background-color: #173A7A;
+}
+
+/* Hero Section */
+.hero {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 20px;
+}
+
+.container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    max-width: 1200px;
+    width: 100%;
+    background: rgba(255, 255, 255, 0.05);
+    box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.3);
+    border-radius: 15px;
+    padding: 40px;
+    backdrop-filter: blur(10px);
+}
+
+/* Hero Content */
+.hero-content {
+    max-width: 50%;
+}
+
+.hero-content h1 {
+    font-weight: 600;
+    font-size: 3rem;
+    margin-bottom: 20px;
+}
+
+.hero-content .description {
+    margin-top: 20px;
+    font-size: 1.1rem;
+    line-height: 1.5;
+}
+
+.hero-content .btn-primary {
+    text-decoration: none;
+    display: inline-block;
+    background-color: #3D4D8C;
+    color: #fff;
+    font-weight: 600;
+    padding: 10px 20px;
+    border-radius: 5px;
+    transition: 0.3s;
+    margin-top: 20px;
+}
+
+.hero-content .btn-primary:hover {
+    background-color: #2A3975;
+}
+
+/* Hero Image */
+.hero-image {
+    max-width: 50%;
+}
+
+.hero-image img {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+/* About Us Section */
+#aboutus {
+    padding: 80px 30px;
+    background-color: #f0f0f0; /* Light grey */
+    color: #333; /* Dark text */
+}
+
+#aboutus h2 {
+    font-size: 2.5rem;
+    font-weight: bold;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+#aboutus p {
+    font-size: 1.2rem;
+    text-align: center;
+    margin-bottom: 30px;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* About Us Section */
+.team-container {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 20px;
+}
+
+.team-member {
+    text-align: center;
+    max-width: 200px;
+}
+
+.team-member img {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 10px;
+}
+
+.team-member h4 {
+    font-size: 18px;
+    margin: 5px 0;
+    color: #333;
+}
+
+.team-member p {
+    font-size: 16px;
+    color: #555;
+}
+
+
+
+/* Testimonial Section */
+#testimonial {
+    text-align: center;
+    padding: 40px 20px;
+    background-color: #ffffff; /* Warna putih untuk background */
+}
+
+#testimonial h2 {
+    color: #0066ff; /* Warna biru untuk sub-judul "Testimonials" */
+    font-size: 1rem; /* Font lebih kecil untuk "Testimonials" */
+    margin-bottom: 10px;
+}
+
+#testimonial h3 {
+    color: #000;
+    font-size: 2rem; /* Font lebih besar untuk "Our Valuable & Trusted Clients" */
+    margin-bottom: 50px; /* Space lebih besar antara judul dan card */
+    font-weight: bold;
+}
+
+.testimonial-container {
+    position: relative;
+    overflow: hidden;
+    width: 80%;
+    margin: auto;
+    border-radius: 20px;
+}
+
+.testimonial-wrapper {
+    display: flex;
+    transition: transform 0.5s ease-in-out;
+}
+
+.testimonial-card {
+    min-width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #f8f8f8; /* Latar belakang card lebih soft */
+    padding: 40px;
+    border-radius: 20px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    box-sizing: border-box; /* Padding dihitung dalam ukuran box */
+}
+
+.testimonial-content {
+    display: flex;
+    align-items: center;
+    text-align: left;
+    padding: 0 20px; /* Tambahkan padding horizontal */
+}
+
+
+.client-photo {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    margin-right: 20px;
+    object-fit: cover; /* Memastikan gambar tetap proporsional */
+}
+
+
+.testimonial-text p {
+    margin: 10px 0;
+    font-size: 1rem;
+    color: #333;
+    line-height: 1.5;
+}
+
+.testimonial-rating {
+    color: #ff9800; /* Warna bintang rating */
+    font-size: 1.2rem;
+}
+
+.testimonial-text h4 {
+    margin: 10px 0 5px;
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #000;
+}
+
+.job-title {
+    font-size: 0.9rem;
+    color: #888;
+}
+
+/* Navigation Buttons (Updated) */
+#prev-btn, #next-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: #ddd;
+    color: #333;
+    border: none;
+    font-size: 1.2rem;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+#prev-btn:hover, #next-btn:hover {
+    background-color: #0066ff; /* Hover menjadi biru */
+    color: #fff;
+}
+
+#prev-btn {
+    left: 10px;
+}
+
+#next-btn {
+    right: 10px;
+}
+
+/* Slide Indicator */
+.slide-indicator {
+    margin-top: 20px;
+}
+
+.dot {
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    margin: 0 5px;
+    background-color: #ddd;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+.dot.active {
+    background-color: #0066ff; /* Indikator aktif berwarna biru */
+}
+
+
+/* Connect with Us Section */
+#connect {
+    background-color: #000; /* Latar belakang hitam */
+    color: #fff; /* Teks putih */
+    padding: 60px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+#connect .connect-info {
+    max-width: 40%;
+}
+
+#connect .connect-info h2 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 15px;
+    line-height: 1.3;
+}
+
+#connect .connect-info p {
+    font-size: 1rem;
+    color: #d1d1d1;
+    margin-bottom: 20px;
+}
+
+#connect .contact-form {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+    width: 55%;
+}
+
+#connect .contact-form input, 
+#connect .contact-form select, 
+#connect .contact-form textarea {
+    padding: 12px;
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid #666;
+    color: #fff;
+    font-size: 1rem;
+    outline: none;
+}
+
+#connect .contact-form textarea {
+    grid-column: span 2;
+    resize: none;
+}
+
+#connect .contact-form button {
+    grid-column: span 2;
+    padding: 12px 20px;
+    background-color: #f5a623; /* Tombol warna */
+    color: #000;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    text-transform: uppercase;
+    transition: background 0.3s ease;
+}
+
+#connect .contact-form button:hover {
+    background-color: #e0951f;
+}
+
+/* Contact Us Section */
+#contact {
+    background-color: #f9f9f9; /* Latar abu terang */
+    padding: 50px 40px;
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    color: #333;
+}
+
+#contact .contact-info {
+    max-width: 40%;
+    font-size: 1rem;
+}
+
+#contact .contact-info h3 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 15px;
+}
+
+#contact .contact-info p {
+    line-height: 1.8;
+    color: #555;
+}
+
+#contact .map-container {
+    width: 55%;
+}
+
+#contact .map-container iframe {
+    width: 100%;
+    height: 300px;
+    border: none;
+    border-radius: 8px;
+}
+
+/* Footer Section */
+footer {
+    background-color: #000;
+    color: #fff;
+    text-align: center;
+    padding: 20px;
+    font-size: 0.9rem;
+}
+
+
+
+/* Footer */
+footer {
+    background-color: #333;
+    color: #fff;
+    padding: 20px;
+    text-align: center;
+}
+
+footer a {
+    color: #fff;
+    text-decoration: none;
+    margin: 0 15px;
+    font-size: 1.1em;
+}
+
+footer p {
+    margin-top: 20px;
+}
