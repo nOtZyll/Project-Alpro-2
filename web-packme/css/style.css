@@ -147,4 +147,3 @@ button#submitButton:hover {
     max-height: 90%; /* Gambar tidak melebihi tinggi box */
     object-fit: contain; /* Menjaga rasio gambar */
 }
-
